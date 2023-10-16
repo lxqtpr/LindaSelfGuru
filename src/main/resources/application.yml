@@ -1,0 +1,26 @@
+server:
+  servlet:
+    context-path: "/api"
+spring:
+  mvc:
+    static-path-pattern: "/content/**"
+  devtools:
+    restart:
+      log-condition-evaluation-delta: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lindaSelfGuru
+    username: postgres
+    password: lxqtpr2021
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        hbm2ddl:
+          auto: update
+security:
+  jwt:
+    accessSecret: "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w=="
+    refreshSecret: "zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg=="
+    accessExpirationInMinutes: 5
+    refreshExpirationInMinutes: 43200
