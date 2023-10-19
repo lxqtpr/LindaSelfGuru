@@ -32,13 +32,16 @@ public class AuthenticationService {
     public ResponseUserDto registration(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail()))
             throw new IllegalArgumentException("User already exist");
+
         var userToSave = modelMapper.map(createUserDto, UserEntity.class);
         userToSave.setRole(RoleEnum.ROLE_ADMIN);
         userToSave.setAvatar(fileService.upload(createUserDto.getAvatar()));
         userToSave.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+
         var res = modelMapper.map(userRepository.save(userToSave), ResponseUserDto.class);
         res.setAccessToken(jwtService.generateAccessToken(userToSave));
         res.setRefreshToken(jwtService.generateRefreshToken(userToSave));
+
         return res;
     }
 

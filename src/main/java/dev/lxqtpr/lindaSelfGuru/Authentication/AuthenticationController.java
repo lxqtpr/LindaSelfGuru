@@ -5,13 +5,9 @@ import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.LoginUserDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.ResponseUserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/auth")

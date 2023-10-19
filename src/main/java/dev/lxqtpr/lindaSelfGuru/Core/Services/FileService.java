@@ -18,7 +18,8 @@ public class FileService {
 
     @SneakyThrows
     public String upload(MultipartFile file) {
-        var fileName = UUID.randomUUID()+"."+file.getOriginalFilename();
+        var sub = UUID.randomUUID()+".";
+        var fileName = file.getOriginalFilename();
         Files.copy(file.getInputStream(), root.resolve(fileName).toAbsolutePath());
         return fileName;
     }

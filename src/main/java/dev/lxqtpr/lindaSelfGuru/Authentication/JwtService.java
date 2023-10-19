@@ -37,7 +37,7 @@ public class JwtService {
                         .toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getId()))
+                .setSubject(user.getEmail())
                 .setExpiration(accessExpiration)
                 .signWith(jwtAccessSecret)
                 .claim("roles", user.getRole())

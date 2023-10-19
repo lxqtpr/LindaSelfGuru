@@ -22,7 +22,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = {
-            "/api/auth/**",
+            "/auth/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui/index.html"
@@ -34,11 +34,11 @@ public class SecurityConfig {
         return http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> {
-                    auth
-                            .requestMatchers(WHITE_LIST_URL).permitAll()
-                            .anyRequest().authenticated();
-                })
+                .authorizeHttpRequests(auth ->
+                        auth
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .anyRequest().permitAll()
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

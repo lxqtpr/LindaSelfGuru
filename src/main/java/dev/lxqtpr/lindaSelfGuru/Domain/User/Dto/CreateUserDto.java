@@ -13,8 +13,10 @@ public class CreateUserDto{
     String lastName;
     @NotEmpty
     String password;
+
     @Email
     @NotEmpty
     String email;
+
     MultipartFile avatar;
 }
