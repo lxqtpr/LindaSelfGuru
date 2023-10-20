@@ -1,5 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.FileService;
 import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.CreateUserDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.LoginUserDto;
@@ -31,10 +32,10 @@ public class AuthenticationService {
 
     public ResponseUserDto registration(CreateUserDto createUserDto) {
         if (userRepository.existsByEmail(createUserDto.getEmail()))
-            throw new IllegalArgumentException("User already exist");
+            throw new ResourceNotFoundException("User already exist");
 
         var userToSave = modelMapper.map(createUserDto, UserEntity.class);
-        userToSave.setRole(RoleEnum.ROLE_ADMIN);
+        userToSave.setRole(RoleEnum.ROLE_USER);
         userToSave.setAvatar(fileService.upload(createUserDto.getAvatar()));
         userToSave.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
 
@@ -64,17 +65,21 @@ public class AuthenticationService {
     }
 
     public ResponseUserDto refreshTokens(HttpServletRequest request){
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String refreshToken;
+        var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("invalid refreshToken");
         }
-        refreshToken = authHeader.substring(7);
+        var refreshToken = authHeader.substring(7);
+        if (!jwtService.validateRefreshToken(refreshToken)){
+            throw new IllegalArgumentException("Refresh token does not valid");
+        }
         var userEmail = jwtService.getUserEmailFromRefreshClaims(refreshToken);
         if (userEmail.isEmpty()) throw new IllegalArgumentException("invalid refreshToken");
+
         var user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
         var res = modelMapper.map(user, ResponseUserDto.class);
+
         res.setAccessToken(jwtService.generateAccessToken(user));
         res.setRefreshToken(jwtService.generateRefreshToken(user));
         return res;

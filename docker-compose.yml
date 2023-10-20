@@ -1,0 +1,41 @@
+volumes:
+  cache:
+    driver: local
+  db-data:
+    driver: local
+  minio-data:
+    driver: local
+  pgAdmin-data:
+    driver: local
+
+services:
+  api:
+    container_name: 'lindaApi'
+    build: ./
+    links:
+      - postgres
+      - pgadmin
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lindaSelfGuru
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=lxqtpr2021
+    volumes:
+      - db-data:/postgres
+
+  pgadmin:
+    container_name: pgAdmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: lxqtpr@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: lxqtpr2021
+    ports:
+      - "5050:80"
+    volumes:
+      - pgAdmin-data:/pgadmin

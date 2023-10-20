@@ -1,5 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Libs;
 
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.FileService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.ResponseCategoryDto;
@@ -44,7 +45,8 @@ public class LibraryService {
         return modelMapper.map(libraryRepository.save(libToSave), ResponseLibraryDto.class);
     }
     public List<ResponseCategoryDto> getAllLibraryCategories(Long libraryId){
-        var lib = libraryRepository.findById(libraryId).orElseThrow();
+        var lib = libraryRepository.findById(libraryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         return lib
                 .getCategories()
                 .stream()
@@ -53,30 +55,31 @@ public class LibraryService {
     }
     public String deleteLibrary(Long id){
         var lib = libraryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Library with this id does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         fileService.deleteFile(lib.getAvatar());
         libraryRepository.deleteById(id);
         return "Library was deleted";
     }
     public ResponseLibraryDto addCategoryToLibrary(LibraryAndCategoryId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
-                .orElseThrow(() -> new IllegalArgumentException("Library with this id does not exist"));
-        var category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
-        library.getCategories().add(category);
+                .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
+        var categories = categoryRepository.findAllById(dto.getCategoriesId());
+        library.getCategories().addAll(categories);
         return modelMapper.map(libraryRepository.save(library), ResponseLibraryDto.class);
     }
     public String removeCategoryFromLibrary(LibraryAndCategoryId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
-                .orElseThrow(() -> new IllegalArgumentException("Library with this id does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         library
                 .getCategories()
                 .stream()
-                .filter(category -> !Objects.equals(category.getId(), dto.getCategoryId()));
+                .filter(category -> !dto.getCategoriesId().contains(category.getId()));
         libraryRepository.save(library);
         return "Category was deleted from library";
     }
     public ResponseLibraryDto updateLibrary (UpdateLibraryDto dto){
-        var library = libraryRepository.findById(dto.getId()).orElseThrow();
+        var library = libraryRepository.findById(dto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         if (dto.getAvatar() != null){
             var fileName = fileService.upload(dto.getAvatar());
             fileService.deleteFile(library.getAvatar());

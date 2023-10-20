@@ -1,5 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Categories;
 
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.FileService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.CategoryAndSongId;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.CreateCategoryDto;
@@ -25,16 +26,15 @@ public class CategoryService {
 
     public ResponseCategoryDto createCategory(CreateCategoryDto dto){
         var lib = libraryRepository.findById(dto.getLibraryId())
-                .orElseThrow(() -> new IllegalArgumentException("Category with this id does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
         var categoryToSave = modelMapper.map(dto, CategoryEntity.class);
         categoryToSave.setLibrary(lib);
-        categoryToSave.setSongs(List.of());
         return modelMapper.map(categoryRepository.save(categoryToSave), ResponseCategoryDto.class);
     }
 
     public ResponseCategoryDto getCategoryById(Long categoryId){
         var category = categoryRepository.findById(categoryId)
-                .orElseThrow(()-> new IllegalArgumentException("Category with this id does not exist"));
+                .orElseThrow(()-> new ResourceNotFoundException("Category with this id does not exist"));
         return modelMapper.map(category, ResponseCategoryDto.class);
     }
     public List<ResponseCategoryDto> getAllCategories(){
@@ -46,15 +46,20 @@ public class CategoryService {
     }
 
     public ResponseCategoryDto addSongToCategory(CategoryAndSongId dto){
-        var category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
-        var song = songsRepository.findById(dto.getSongId()).orElseThrow();
-        category.getSongs().add(song);
-        return modelMapper.map(songsRepository.save(song), ResponseCategoryDto.class);
+        var category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
+        var songs = songsRepository.findAllById(dto.getSongsId());
+        category.getSongs().addAll(songs);
+        return modelMapper.map(categoryRepository.save(category), ResponseCategoryDto.class);
     }
 
     public ResponseCategoryDto removeSongFromCategory(CategoryAndSongId dto){
-        var category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
-        category.getSongs().stream().filter(song -> !Objects.equals(song.getId(), dto.getSongId()));
+        var category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
+        category
+                .getSongs()
+                .stream()
+                .filter(song -> !dto.getSongsId().contains(song.getId()));
         return modelMapper.map(categoryRepository.save(category), ResponseCategoryDto.class);
     }
     public String deleteCategory(Long categoryId){
@@ -62,9 +67,12 @@ public class CategoryService {
         return "Category deleted";
     }
     public ResponseCategoryDto updateCategory(UpdateCategoryDto dto){
-        var category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
+        var category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
+
         if(dto.getLibraryId() != null){
-            var lib = libraryRepository.findById(dto.getLibraryId()).orElseThrow();
+            var lib = libraryRepository.findById(dto.getLibraryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
             category.setLibrary(lib);
         }
         category.setName(dto.getName());

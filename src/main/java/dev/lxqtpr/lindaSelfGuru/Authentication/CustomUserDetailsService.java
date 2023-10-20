@@ -1,5 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.NotFound;
@@ -15,7 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User with this email not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with this email not found"));
         return new CustomUserDetails(user);
     }
 }

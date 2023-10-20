@@ -14,5 +14,6 @@ public class UpdateSongDto {
     @NotNull
     private String songName;
 
+    @NotNull
     private Long categoryId;
 }

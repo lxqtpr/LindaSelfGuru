@@ -1,5 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.JwtException;
 import dev.lxqtpr.lindaSelfGuru.Core.Properties.JwtProperties;
 import dev.lxqtpr.lindaSelfGuru.Domain.User.UserEntity;
 import io.jsonwebtoken.*;
@@ -68,23 +69,16 @@ public class JwtService {
 
     private boolean validateToken(String token,SecretKey secret) {
         try {
-            Jwts.parserBuilder()
+            Jwts
+                    .parserBuilder()
                     .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException expEx) {
-            log.error("Token expired", expEx);
-        } catch (UnsupportedJwtException unsEx) {
-            log.error("Unsupported jwt", unsEx);
-        } catch (MalformedJwtException mjEx) {
-            log.error("Malformed jwt", mjEx);
-        } catch (SignatureException sEx) {
-            log.error("Invalid signature", sEx);
-        } catch (Exception e) {
-            log.error("invalid token", e);
         }
-        return false;
+        catch (Exception e){
+            throw new JwtException(e.getMessage());
+        }
     }
 
     public String getUserEmailFromAccessClaims(String token) {
