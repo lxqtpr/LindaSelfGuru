@@ -1,16 +1,14 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Projects;
 
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
-import dev.lxqtpr.lindaSelfGuru.Core.Services.FileService;
+import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.NoteRepository;
-import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.ResponsePhraseDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.CreateProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.ResponseProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.UpdateProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongsRepository;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserRepository;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +18,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final FileService fileService;
+    private final MinioService minioService;
     private final NoteRepository noteRepository;
     private final SongsRepository songsRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
 
     public ResponseProjectDto createProject(CreateProjectDto dto){
-        var fileName = fileService.upload(dto.getVoiceRecording());
+        var fileName = minioService.upload(dto.getUserId(), dto.getVoiceRecording());
+
         var projectToSave = modelMapper.map(dto, ProjectEntity.class);
         projectToSave.setVoiceRecording(fileName);
+
         var note = noteRepository.findById(dto.getNoteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
         var song = songsRepository.findById(dto.getSongId())
@@ -63,11 +63,10 @@ public class ProjectService {
         project.setSong(song);
         return modelMapper.map(projectRepository.save(project), ResponseProjectDto.class);
     }
-    public String deleteProject(Long projectId){
+    public void deleteProject(Long userId, Long projectId){
         var project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project with this id does not exist"));
-        fileService.deleteFile(project.getVoiceRecording());
+        minioService.deleteFile(userId, project.getVoiceRecording());
         projectRepository.deleteById(projectId);
-        return "Project was deleted";
     }
 }

@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.User.Dto;
+package dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

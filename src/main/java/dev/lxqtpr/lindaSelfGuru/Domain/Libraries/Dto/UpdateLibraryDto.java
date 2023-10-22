@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto;
+package dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -11,6 +11,9 @@ public class UpdateLibraryDto {
 
     @NotNull
     private String title;
+
+    @NotNull
+    private Long userId;
 
     private MultipartFile avatar;
 

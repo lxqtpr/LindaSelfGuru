@@ -1,8 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.RoleEnum;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,19 +1,19 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.Libs;
+package dev.lxqtpr.lindaSelfGuru.Domain.Libraries;
 
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
-import dev.lxqtpr.lindaSelfGuru.Core.Services.FileService;
+import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.ResponseCategoryDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.LibraryAndCategoryId;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.CreateLibraryDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.ResponseLibraryDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.UpdateLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.LibraryAndCategoriesId;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.CreateLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.ResponseLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.UpdateLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,27 +21,32 @@ public class LibraryService {
 
     private final LibraryRepository libraryRepository;
     private final ModelMapper modelMapper;
-    private final FileService fileService;
+    private final MinioService minioService;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
+
 
     public ResponseLibraryDto getLibraryById(Long id){
         var lib = libraryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Library with this id does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         return modelMapper.map(lib, ResponseLibraryDto.class);
     }
-    public List<ResponseLibraryDto> getAllLibraries(){
-        return libraryRepository
-                .findAll()
+    public List<ResponseLibraryDto> getAllUserLibraries(Long userId){
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
+        return user
+                .getLibrary()
                 .stream()
                 .map(library -> modelMapper.map(library, ResponseLibraryDto.class))
                 .toList();
     }
-
     public ResponseLibraryDto createLibrary(CreateLibraryDto dto){
         var libToSave = modelMapper.map(dto, LibraryEntity.class);
-        var fileName = fileService.upload(dto.getFile());
-        libToSave.setAvatar(fileName);
-        libToSave.setCategories(List.of());
+        var file = minioService.upload(dto.getUserId(), dto.getFile());
+        var user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
+        libToSave.setAvatar(file);
+        libToSave.setUser(user);
         return modelMapper.map(libraryRepository.save(libToSave), ResponseLibraryDto.class);
     }
     public List<ResponseCategoryDto> getAllLibraryCategories(Long libraryId){
@@ -53,37 +58,54 @@ public class LibraryService {
                 .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();
     }
-    public String deleteLibrary(Long id){
+    public void deleteLibrary(Long id){
         var lib = libraryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
-        fileService.deleteFile(lib.getAvatar());
+        minioService.deleteFile(
+                lib.getUser().getId(),
+                lib.getAvatar()
+        );
+        lib.getCategories().forEach(category -> {
+            category.setLibrary(null);
+            categoryRepository.save(category);
+        });
         libraryRepository.deleteById(id);
-        return "Library was deleted";
     }
-    public ResponseLibraryDto addCategoryToLibrary(LibraryAndCategoryId dto){
+    public List<ResponseCategoryDto> addCategoryToLibrary(LibraryAndCategoriesId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
+
         var categories = categoryRepository.findAllById(dto.getCategoriesId());
-        library.getCategories().addAll(categories);
-        return modelMapper.map(libraryRepository.save(library), ResponseLibraryDto.class);
+        categories.forEach(category -> {
+            category.setLibrary(library);
+            categoryRepository.save(category);
+        });
+
+        return library.getCategories()
+                .stream().map(category -> modelMapper.map(category, ResponseCategoryDto.class))
+                .toList();
     }
-    public String removeCategoryFromLibrary(LibraryAndCategoryId dto){
+    public void removeCategoryFromLibrary(LibraryAndCategoriesId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
-        library
-                .getCategories()
-                .stream()
-                .filter(category -> !dto.getCategoriesId().contains(category.getId()));
-        libraryRepository.save(library);
-        return "Category was deleted from library";
+        library.getCategories()
+                .forEach(category -> {
+                    if (dto.getCategoriesId().contains(category.getId())){
+                        category.setLibrary(null);
+                        categoryRepository.save(category);
+                    }
+                });
     }
     public ResponseLibraryDto updateLibrary (UpdateLibraryDto dto){
         var library = libraryRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         if (dto.getAvatar() != null){
-            var fileName = fileService.upload(dto.getAvatar());
-            fileService.deleteFile(library.getAvatar());
-            library.setAvatar(fileName);
+            var file = minioService.upload(dto.getUserId(), dto.getAvatar());
+            minioService.deleteFile(
+                    dto.getUserId(),
+                    library.getAvatar()
+            );
+            library.setAvatar(file);
         }
         library.setTitle(dto.getTitle());
         library.setSubtitle(dto.getSubtitle());

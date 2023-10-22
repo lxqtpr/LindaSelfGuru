@@ -1,5 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Core.Configs;
 
+import dev.lxqtpr.lindaSelfGuru.Authentication.CustomAuthenticationEntryPoint;
 import dev.lxqtpr.lindaSelfGuru.Authentication.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ public class SecurityConfig {
             "/swagger-ui/index.html"
     };
     private final JwtFilter jwtFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,6 +41,9 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptionHandler ->
+                        exceptionHandler.authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

@@ -4,7 +4,7 @@ import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.CreateNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.ResponseNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.UpdateNoteDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserRepository;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,8 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserRepository;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.NotFound;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

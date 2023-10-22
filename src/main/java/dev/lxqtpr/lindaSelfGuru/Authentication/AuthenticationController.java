@@ -1,8 +1,8 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
-import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.CreateUserDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.LoginUserDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.ResponseUserDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.CreateUserDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.LoginUserDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.ResponseUserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

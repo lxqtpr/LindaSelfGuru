@@ -10,6 +10,4 @@ public class UpdateCategoryDto {
 
     @NotNull
     private String name;
-
-    private Long libraryId;
 }

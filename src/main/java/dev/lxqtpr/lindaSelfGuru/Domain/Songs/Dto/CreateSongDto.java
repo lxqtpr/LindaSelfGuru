@@ -11,6 +11,9 @@ public class CreateSongDto {
     private String songName;
 
     @NotNull
+    private Long userId;
+
+    @NotNull
     private Long categoryId;
 
     private MultipartFile file;

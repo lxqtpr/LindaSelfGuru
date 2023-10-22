@@ -1,7 +1,8 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.Libs;
+package dev.lxqtpr.lindaSelfGuru.Domain.Libraries;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryEntity;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@Builder
 public class LibraryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +25,10 @@ public class LibraryEntity {
 
     private String subtitle;
 
-    @OneToMany(mappedBy = "library")
+    @OneToMany(mappedBy = "library", orphanRemoval = true)
     private List<CategoryEntity> categories;
 
     @ManyToOne
-    @JoinColumn(name = "creater_Id")
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 }

@@ -2,7 +2,7 @@ package dev.lxqtpr.lindaSelfGuru.Domain.Projects;
 
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.NotesEntity;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongEntity;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,12 +1,11 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.User;
+package dev.lxqtpr.lindaSelfGuru.Domain.Users;
 
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.LibraryEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.LibraryEntity;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.NotesEntity;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.ProjectEntity;
-import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.weaver.ast.Not;
 
 import java.util.List;
 
@@ -15,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class UserEntity {
 
     @Id
@@ -24,6 +24,8 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String password;
+
+    @Column(unique = true)
     private String email;
     private String avatar;
 
@@ -32,6 +34,9 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ProjectEntity> projects;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<CategoryEntity> categories;
 
     @Enumerated(EnumType.STRING)
     private RoleEnum role;

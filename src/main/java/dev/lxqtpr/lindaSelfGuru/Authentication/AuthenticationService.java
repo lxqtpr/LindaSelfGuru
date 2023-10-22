@@ -1,13 +1,13 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
-import dev.lxqtpr.lindaSelfGuru.Core.Services.FileService;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.CreateUserDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.LoginUserDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.Dto.ResponseUserDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.RoleEnum;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserEntity;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserRepository;
+import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.CreateUserDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.LoginUserDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.ResponseUserDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.RoleEnum;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,9 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
-
-import java.net.http.HttpRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final FileService fileService;
+    private final MinioService minioService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
@@ -35,11 +32,16 @@ public class AuthenticationService {
             throw new ResourceNotFoundException("User already exist");
 
         var userToSave = modelMapper.map(createUserDto, UserEntity.class);
+
         userToSave.setRole(RoleEnum.ROLE_USER);
-        userToSave.setAvatar(fileService.upload(createUserDto.getAvatar()));
         userToSave.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
 
+        var savedUser = userRepository.save(userToSave);
+        var file = minioService.upload(savedUser.getId(), createUserDto.getAvatar());
+        userToSave.setAvatar(file);
+
         var res = modelMapper.map(userRepository.save(userToSave), ResponseUserDto.class);
+
         res.setAccessToken(jwtService.generateAccessToken(userToSave));
         res.setRefreshToken(jwtService.generateRefreshToken(userToSave));
 

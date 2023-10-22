@@ -23,15 +23,14 @@ public class CategoryController {
                 .ok(categoryService.getCategoryById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ResponseCategoryDto>> getAllCategories() {
+    @GetMapping("/getUserCategories/{userId}")
+    public ResponseEntity<List<ResponseCategoryDto>> getAllCategories(@PathVariable Long userId) {
         return ResponseEntity
-                .ok(categoryService.getAllCategories());
+                .ok(categoryService.getAllUserCategories(userId));
     }
     @PostMapping
     public ResponseEntity<ResponseCategoryDto> createCategory(@RequestBody @Valid CreateCategoryDto dto) {
-        return new ResponseEntity<>
-                (categoryService.createCategory(dto), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryService.createCategory(dto), HttpStatus.CREATED);
     }
 
     @PostMapping("/addSongToCategory")
@@ -43,11 +42,8 @@ public class CategoryController {
     }
 
     @PostMapping("/removeSongFromCategory")
-    public ResponseEntity<ResponseCategoryDto> removeSongFromCategory(
-            @RequestBody @Valid CategoryAndSongId dto
-    ){
-        return new ResponseEntity<>
-                (categoryService.removeSongFromCategory(dto), HttpStatus.NO_CONTENT);
+    public void removeSongFromCategory(@RequestBody @Valid CategoryAndSongId dto){
+        categoryService.removeSongFromCategory(dto);
     }
     @PutMapping
     private ResponseEntity<ResponseCategoryDto> updateCategory(@RequestBody @Valid UpdateCategoryDto dto){
@@ -55,7 +51,7 @@ public class CategoryController {
                 .ok(categoryService.updateCategory(dto));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
-        return ResponseEntity.ok(categoryService.deleteCategory(id));
+    public void deleteCategory(@PathVariable Long id){
+        categoryService.deleteCategory(id);
     }
 }

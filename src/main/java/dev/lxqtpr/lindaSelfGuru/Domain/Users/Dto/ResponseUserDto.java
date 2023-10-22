@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.User.Dto;
+package dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto;
 
 import lombok.Getter;
 import lombok.Setter;

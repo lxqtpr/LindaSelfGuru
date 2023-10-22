@@ -1,10 +1,10 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.Libs;
+package dev.lxqtpr.lindaSelfGuru.Domain.Libraries;
 
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.ResponseCategoryDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.LibraryAndCategoryId;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.CreateLibraryDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.ResponseLibraryDto;
-import dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto.UpdateLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.LibraryAndCategoriesId;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.CreateLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.ResponseLibraryDto;
+import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.UpdateLibraryDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,10 +29,10 @@ public class LibraryController {
         return ResponseEntity
                 .ok(libraryService.getAllLibraryCategories(id));
     }
-    @GetMapping
-    public ResponseEntity<List<ResponseLibraryDto>> getAllLibraries(){
+    @GetMapping("/getUserLibraries/{userId}")
+    public ResponseEntity<List<ResponseLibraryDto>> getAllUserLibraries(@PathVariable Long userId){
         return ResponseEntity
-                .ok(libraryService.getAllLibraries());
+                .ok(libraryService.getAllUserLibraries(userId));
     }
 
     @PostMapping
@@ -40,20 +40,17 @@ public class LibraryController {
         return new ResponseEntity<>(libraryService.createLibrary(dto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/deleteLibrary/{id}")
-    public ResponseEntity<String> deleteLibrary(@PathVariable Long id){
-        return ResponseEntity
-                .ok(libraryService.deleteLibrary(id));
+    @DeleteMapping("/{id}")
+    public void deleteLibrary(@PathVariable Long id){
+       libraryService.deleteLibrary(id);
     }
     @PostMapping("/addCategory")
-    public ResponseEntity<ResponseLibraryDto> addCategoryToLibrary(@RequestBody @Valid LibraryAndCategoryId dto){
+    public ResponseEntity<List<ResponseCategoryDto>> addCategoryToLibrary(@RequestBody @Valid LibraryAndCategoriesId dto){
         return new ResponseEntity<>(libraryService.addCategoryToLibrary(dto), HttpStatus.CREATED);
     }
-
-    @PostMapping("/removeCategory")
-    public ResponseEntity<String> removeCategory(@RequestBody @Valid LibraryAndCategoryId dto){
-        return ResponseEntity
-                .ok(libraryService.removeCategoryFromLibrary(dto));
+    @PostMapping("/removeCategories")
+    public void removeCategory(@RequestBody @Valid LibraryAndCategoriesId dto){
+        libraryService.removeCategoryFromLibrary(dto);
     }
 
     @PutMapping

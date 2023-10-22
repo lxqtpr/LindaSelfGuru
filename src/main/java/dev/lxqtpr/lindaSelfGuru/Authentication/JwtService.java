@@ -2,11 +2,10 @@ package dev.lxqtpr.lindaSelfGuru.Authentication;
 
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.JwtException;
 import dev.lxqtpr.lindaSelfGuru.Core.Properties.JwtProperties;
-import dev.lxqtpr.lindaSelfGuru.Domain.User.UserEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import javax.crypto.SecretKey;

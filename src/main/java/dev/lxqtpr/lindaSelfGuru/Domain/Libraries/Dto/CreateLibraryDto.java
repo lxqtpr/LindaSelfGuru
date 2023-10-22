@@ -1,10 +1,9 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.Libs.Dto;
+package dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
 
 @Data
 public class CreateLibraryDto {
@@ -13,7 +12,10 @@ public class CreateLibraryDto {
     private String title;
 
     @NotNull
-    private String subTitle;
+    private String subtitle;
+
+    @NotNull
+    private Long userId;
 
     private MultipartFile file;
 }

@@ -7,5 +7,5 @@ import java.util.List;
 public class ResponseSongDto {
     private Long id;
     private String songName;
-    private String fileName;
+    private String filePath;
 }

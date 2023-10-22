@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CreateProjectDto {
-
     @NotEmpty
     @NotNull
     private String name;

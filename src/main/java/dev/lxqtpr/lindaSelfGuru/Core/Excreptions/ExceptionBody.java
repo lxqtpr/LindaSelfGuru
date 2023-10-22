@@ -10,5 +10,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class ExceptionBody {
     private String message;
-    private Integer httpStatus;
+    private Integer status;
 }

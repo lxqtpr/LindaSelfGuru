@@ -12,8 +12,10 @@ public class UpdateSongDto {
     private MultipartFile file;
 
     @NotNull
-    private String songName;
+    private Long userId;
 
     @NotNull
+    private String songName;
+
     private Long categoryId;
 }

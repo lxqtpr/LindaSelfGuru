@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.User;
+package dev.lxqtpr.lindaSelfGuru.Domain.Users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

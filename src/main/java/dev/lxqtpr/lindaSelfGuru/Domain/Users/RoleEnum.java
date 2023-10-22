@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Domain.User;
+package dev.lxqtpr.lindaSelfGuru.Domain.Users;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
