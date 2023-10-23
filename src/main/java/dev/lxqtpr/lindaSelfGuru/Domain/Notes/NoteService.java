@@ -5,6 +5,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.CreateNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.ResponseNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.UpdateNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,9 @@ public class NoteService {
         note.setTitle(dto.getTitle());
         return modelMapper.map(noteRepository.save(note), ResponseNoteDto.class);
     }
-    public String deleteNote(Long noteId){
+
+    @Transactional
+    public void deleteNote(Long noteId){
         noteRepository.deleteById(noteId);
-        return "Note was deleted";
     }
 }

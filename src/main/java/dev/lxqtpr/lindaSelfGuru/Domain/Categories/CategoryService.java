@@ -8,6 +8,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.UpdateCategoryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.LibraryRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongsRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -73,6 +74,7 @@ public class CategoryService {
                     }
                 });
     }
+    @Transactional
     public void deleteCategory(Long categoryId){
         categoryRepository.deleteById(categoryId);
     }

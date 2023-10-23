@@ -25,7 +25,7 @@ public class LibraryEntity {
 
     private String subtitle;
 
-    @OneToMany(mappedBy = "library", orphanRemoval = true)
+    @OneToMany(mappedBy = "library",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryEntity> categories;
 
     @ManyToOne

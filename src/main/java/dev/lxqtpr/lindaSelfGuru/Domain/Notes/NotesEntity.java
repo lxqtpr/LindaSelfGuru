@@ -25,7 +25,7 @@ public class NotesEntity {
 
     private String title;
 
-    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhraseEntity> phrases;
 
 }

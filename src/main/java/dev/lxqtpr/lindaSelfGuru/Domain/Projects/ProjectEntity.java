@@ -21,15 +21,15 @@ public class ProjectEntity {
 
     private String name;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "song_id")
     private SongEntity song;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "note_id")
     private NotesEntity note;
 

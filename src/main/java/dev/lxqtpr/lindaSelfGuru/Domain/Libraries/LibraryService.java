@@ -9,6 +9,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.CreateLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.ResponseLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.UpdateLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class LibraryService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
         return user
-                .getLibrary()
+                .getLibraries()
                 .stream()
                 .map(library -> modelMapper.map(library, ResponseLibraryDto.class))
                 .toList();
@@ -58,6 +59,7 @@ public class LibraryService {
                 .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();
     }
+    @Transactional
     public void deleteLibrary(Long id){
         var lib = libraryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
@@ -65,10 +67,6 @@ public class LibraryService {
                 lib.getUser().getId(),
                 lib.getAvatar()
         );
-        lib.getCategories().forEach(category -> {
-            category.setLibrary(null);
-            categoryRepository.save(category);
-        });
         libraryRepository.deleteById(id);
     }
     public List<ResponseCategoryDto> addCategoryToLibrary(LibraryAndCategoriesId dto){

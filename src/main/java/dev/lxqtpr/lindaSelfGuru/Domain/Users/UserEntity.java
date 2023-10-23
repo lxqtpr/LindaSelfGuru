@@ -29,13 +29,13 @@ public class UserEntity {
     private String email;
     private String avatar;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<LibraryEntity> library;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LibraryEntity> libraries;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectEntity> projects;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryEntity> categories;
 
     @Enumerated(EnumType.STRING)

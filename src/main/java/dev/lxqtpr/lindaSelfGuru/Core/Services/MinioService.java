@@ -3,12 +3,16 @@ package dev.lxqtpr.lindaSelfGuru.Core.Services;
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ImageUploadException;
 import dev.lxqtpr.lindaSelfGuru.Core.Properties.MinioProperties;
 import io.minio.*;
+import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 @Service
@@ -16,7 +20,6 @@ import java.util.UUID;
 public class MinioService {
 
     private final MinioClient minioClient;
-    private final MinioProperties minioProperties;
     public String upload(Long userId, MultipartFile image) {
         try {
             createBucket(userId);
@@ -64,17 +67,33 @@ public class MinioService {
         }
     }
     @SneakyThrows
-    private void deleteBucket(Long userId){
+    public void deleteBucket(Long userId){
+        var bucketName = generateBucketName(userId);
         boolean found = minioClient.bucketExists(
                 BucketExistsArgs
                         .builder()
-                        .bucket(generateBucketName(userId))
+                        .bucket(bucketName)
                         .build());
         if (found) {
+            var files = minioClient.listObjects(
+                    ListObjectsArgs
+                            .builder()
+                            .bucket(bucketName)
+                            .build()
+            );
+            files.forEach(file -> {
+                try {
+                    deleteFile(userId, file.get().objectName());
+                } catch (Exception e) {
+                    throw new ImageUploadException(e.getMessage());
+                }
+            });
             minioClient.removeBucket(
-                    RemoveBucketArgs.builder()
+                    RemoveBucketArgs
+                            .builder()
                             .bucket(generateBucketName(userId))
-                            .build());
+                            .build()
+            );
         }
         else{
             throw new ImageUploadException("Bucket for deleting does not exist");

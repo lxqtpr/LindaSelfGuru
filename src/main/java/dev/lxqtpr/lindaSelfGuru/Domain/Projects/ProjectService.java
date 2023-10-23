@@ -8,6 +8,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.ResponseProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.UpdateProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongsRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,8 @@ public class ProjectService {
         project.setSong(song);
         return modelMapper.map(projectRepository.save(project), ResponseProjectDto.class);
     }
+
+    @Transactional
     public void deleteProject(Long userId, Long projectId){
         var project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project with this id does not exist"));
