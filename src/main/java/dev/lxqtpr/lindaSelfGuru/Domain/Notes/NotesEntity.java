@@ -1,6 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Notes;
 
-import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.PhraseEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.PhrasesEntity;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import jakarta.persistence.*;
 import java.util.List;
@@ -26,6 +26,6 @@ public class NotesEntity {
     private String title;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PhraseEntity> phrases;
+    private List<PhrasesEntity> phrases;
 
 }

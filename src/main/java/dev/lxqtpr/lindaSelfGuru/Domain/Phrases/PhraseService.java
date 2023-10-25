@@ -18,7 +18,7 @@ public class PhraseService {
 
 
     public ResponsePhraseDto createPhrase(CreatePhraseDto dto){
-        var phraseToSave = modelMapper.map(dto, PhraseEntity.class);
+        var phraseToSave = modelMapper.map(dto, PhrasesEntity.class);
         var note = noteRepository.findById(dto.getNoteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
         phraseToSave.setNote(note);
@@ -39,8 +39,7 @@ public class PhraseService {
         return modelMapper.map(phraseRepository.save(phrase), ResponsePhraseDto.class);
     }
 
-    public String deletePhrase(Long id){
+    public void deletePhrase(Long id){
         phraseRepository.deleteById(id);
-        return "Phrase was deleted";
     }
 }

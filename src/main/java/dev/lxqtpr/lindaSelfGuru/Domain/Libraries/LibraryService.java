@@ -59,10 +59,16 @@ public class LibraryService {
                 .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();
     }
-    @Transactional
     public void deleteLibrary(Long id){
         var lib = libraryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
+
+        lib.getCategories().forEach(
+                category -> {
+                    category.setLibrary(null);
+                    categoryRepository.save(category);
+                }
+        );
         minioService.deleteFile(
                 lib.getUser().getId(),
                 lib.getAvatar()

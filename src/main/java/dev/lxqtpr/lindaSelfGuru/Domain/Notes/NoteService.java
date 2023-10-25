@@ -23,6 +23,7 @@ public class NoteService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
         var noteToSave = modelMapper.map(dto, NotesEntity.class);
         noteToSave.setUser(user);
+        noteToSave.setPhrases(List.of());
         return modelMapper.map(noteRepository.save(noteToSave), ResponseNoteDto.class);
     }
 

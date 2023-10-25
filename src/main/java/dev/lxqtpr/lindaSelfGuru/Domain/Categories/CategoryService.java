@@ -74,8 +74,16 @@ public class CategoryService {
                     }
                 });
     }
-    @Transactional
+
     public void deleteCategory(Long categoryId){
+        var category = categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
+        category.getSongs().forEach(
+                song -> {
+                    song.setCategory(null);
+                    songsRepository.save(song);
+                }
+        );
         categoryRepository.deleteById(categoryId);
     }
     public ResponseCategoryDto updateCategory(UpdateCategoryDto dto){

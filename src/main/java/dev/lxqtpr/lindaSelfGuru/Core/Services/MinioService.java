@@ -54,16 +54,39 @@ public class MinioService {
 
     @SneakyThrows
     private void createBucket(Long userId) {
+        var bucketName = generateBucketName(userId);
         boolean found = minioClient.bucketExists(
                 BucketExistsArgs
                         .builder()
-                        .bucket(generateBucketName(userId))
+                        .bucket(bucketName)
                         .build());
         if (!found) {
             minioClient.makeBucket(
-                    MakeBucketArgs.builder()
-                    .bucket(generateBucketName(userId))
-                    .build());
+                    MakeBucketArgs
+                            .builder()
+                            .bucket(bucketName)
+                            .build());
+            var jsonConfig = "{\n" +
+                    "   \"Version\": \"2012-10-17\",\n" +
+                    "   \"Statement\": [\n" +
+                    "      {\n" +
+                    "         \"Sid\": \"statement1\",\n" +
+                    "         \"Effect\": \"Allow\",\n" +
+                    "         \"Principal\": \"*\",\n" +
+                    "         \"Action\": [\n" +
+                    "            \"s3:GetObject\"\n" +
+                    "         ],\n" +
+                    "         \"Resource\": \"arn:aws:s3:::" + bucketName + "/*\"\n" +
+                    "      }\n" +
+                    "   ]\n" +
+                    "}";
+            minioClient.setBucketPolicy(
+                    SetBucketPolicyArgs
+                            .builder()
+                            .config(jsonConfig)
+                            .bucket(bucketName)
+                            .build()
+            );
         }
     }
     @SneakyThrows

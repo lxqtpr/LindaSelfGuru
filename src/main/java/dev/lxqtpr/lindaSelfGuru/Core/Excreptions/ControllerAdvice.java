@@ -1,9 +1,9 @@
 package dev.lxqtpr.lindaSelfGuru.Core.Excreptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -37,5 +37,4 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     public ExceptionBody handleAuthenticationExceptions(AuthenticationException e) {
         return new ExceptionBody(e.getMessage(), HttpStatus.FORBIDDEN.value());
     }
-
 }

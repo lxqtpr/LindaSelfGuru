@@ -9,7 +9,7 @@ spring:
       log-condition-evaluation-delta: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lindaSelfGuru
+    url: jdbc:postgresql://postgres:5432/lindaSelfGuru
     username: postgres
     password: lxqtpr2021
   jpa:
@@ -25,6 +25,6 @@ security:
     accessExpirationInMinutes: 5
     refreshExpirationInMinutes: 43200
 minio:
-  url: http://localhost:9000
+  url: http://minio:9000
   accessKey: minioadmin
   secretKey: minioadmin

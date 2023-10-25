@@ -31,7 +31,7 @@ public class PhraseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePhase(@PathVariable Long id){
-        return ResponseEntity.ok(phraseService.deletePhrase(id));
+    public void deletePhase(@PathVariable Long id){
+        phraseService.deletePhrase(id);
     }
 }

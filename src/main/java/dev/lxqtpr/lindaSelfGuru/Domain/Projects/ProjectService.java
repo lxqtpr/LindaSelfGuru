@@ -37,9 +37,11 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Song with this id does not exist"));
         var user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
+
         projectToSave.setNote(note);
         projectToSave.setSong(song);
         projectToSave.setUser(user);
+
         return modelMapper.map(projectRepository.save(projectToSave), ResponseProjectDto.class);
     }
 
@@ -65,7 +67,6 @@ public class ProjectService {
         return modelMapper.map(projectRepository.save(project), ResponseProjectDto.class);
     }
 
-    @Transactional
     public void deleteProject(Long userId, Long projectId){
         var project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project with this id does not exist"));
