@@ -27,12 +27,12 @@ public class PhraseService {
 
     public ResponsePhraseDto getPhraseById(Long phraseId){
         var phrase = phraseRepository.findById(phraseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Phrase with this id does not exist"));
         return modelMapper.map(phrase, ResponsePhraseDto.class);
     }
     public ResponsePhraseDto updatePhrase(UpdatePhraseDto dto){
         var phrase = phraseRepository.findById(dto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Phrase with this id does not exist"));
         phrase.setText(dto.getText());
         phrase.setTime(dto.getTime());
         phrase.setSilence(dto.getSilence());

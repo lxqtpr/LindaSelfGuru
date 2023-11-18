@@ -26,18 +26,18 @@ public class ProjectService {
     private final UserRepository userRepository;
 
     public ResponseProjectDto createProject(CreateProjectDto dto){
-        var fileName = minioService.upload(dto.getUserId(), dto.getVoiceRecording());
 
         var projectToSave = modelMapper.map(dto, ProjectEntity.class);
-        projectToSave.setVoiceRecording(fileName);
-
         var note = noteRepository.findById(dto.getNoteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
         var song = songsRepository.findById(dto.getSongId())
                 .orElseThrow(() -> new ResourceNotFoundException("Song with this id does not exist"));
         var user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
-
+        if(dto.getVoiceRecording() != null){
+            var filePath = minioService.upload(dto.getUserId(), dto.getVoiceRecording());
+            projectToSave.setVoiceRecording(filePath);
+        }
         projectToSave.setNote(note);
         projectToSave.setSong(song);
         projectToSave.setUser(user);

@@ -21,7 +21,7 @@ public class ProjectEntity {
 
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "song_id")
     private SongEntity song;
 
@@ -29,7 +29,7 @@ public class ProjectEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "note_id")
     private NotesEntity note;
 

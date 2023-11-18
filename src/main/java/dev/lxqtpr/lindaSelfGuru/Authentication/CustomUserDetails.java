@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(userEntity.getRole());
     }
-
+    public Long getId(){ return userEntity.getId();}
     @Override
     public String getPassword() {
         return userEntity.getPassword();

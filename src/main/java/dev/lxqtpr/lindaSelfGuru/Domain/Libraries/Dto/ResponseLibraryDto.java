@@ -1,6 +1,5 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data

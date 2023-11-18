@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class UpdateLibraryDto {
     @NotNull
-    private Long id;
+    private Long libraryId;
 
     @NotNull
     private String title;

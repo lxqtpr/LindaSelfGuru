@@ -7,10 +7,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CreateUserDto{
+
     @NotEmpty
     String firstName;
+
     @NotEmpty
     String lastName;
+
     @NotEmpty
     String password;
 

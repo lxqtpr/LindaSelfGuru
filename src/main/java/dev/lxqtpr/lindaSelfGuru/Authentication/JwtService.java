@@ -47,7 +47,7 @@ public class JwtService {
     public String generateRefreshToken(UserEntity user) {
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant =
-                now.plusDays(jwtProperties.getRefreshExpirationInMinutes())
+                now.plusMinutes(jwtProperties.getRefreshExpirationInMinutes())
                         .atZone(ZoneId.systemDefault())
                         .toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);

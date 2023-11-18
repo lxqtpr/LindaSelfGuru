@@ -1,6 +1,7 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Notes;
 
 import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.PhrasesEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Projects.ProjectEntity;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import jakarta.persistence.*;
 import java.util.List;

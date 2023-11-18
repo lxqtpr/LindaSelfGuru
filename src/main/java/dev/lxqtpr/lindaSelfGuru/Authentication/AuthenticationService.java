@@ -1,5 +1,7 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.JwtException;
+import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.PasswordDoesNotMatchException;
 import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.CreateUserDto;
@@ -37,8 +39,10 @@ public class AuthenticationService {
         userToSave.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
 
         var savedUser = userRepository.save(userToSave);
-        var file = minioService.upload(savedUser.getId(), createUserDto.getAvatar());
-        userToSave.setAvatar(file);
+        if (createUserDto.getAvatar() != null){
+            var file = minioService.upload(savedUser.getId(), createUserDto.getAvatar());
+            userToSave.setAvatar(file);
+        }
 
         var res = modelMapper.map(userRepository.save(userToSave), ResponseUserDto.class);
 
@@ -50,9 +54,9 @@ public class AuthenticationService {
 
     public ResponseUserDto login(LoginUserDto loginUserDto){
         var user = userRepository.findByEmail(loginUserDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
         if (!passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword())){
-            throw new IllegalArgumentException("Password does not match");
+            throw new PasswordDoesNotMatchException("Password does not match");
         }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -69,17 +73,17 @@ public class AuthenticationService {
     public ResponseUserDto refreshTokens(HttpServletRequest request){
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("invalid refreshToken");
+            throw new JwtException("invalid refreshToken");
         }
         var refreshToken = authHeader.substring(7);
         if (!jwtService.validateRefreshToken(refreshToken)){
-            throw new IllegalArgumentException("Refresh token does not valid");
+            throw new JwtException("Refresh token does not valid");
         }
         var userEmail = jwtService.getUserEmailFromRefreshClaims(refreshToken);
-        if (userEmail.isEmpty()) throw new IllegalArgumentException("invalid refreshToken");
+        if (userEmail.isEmpty()) throw new JwtException("invalid refreshToken");
 
         var user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
         var res = modelMapper.map(user, ResponseUserDto.class);
 
         res.setAccessToken(jwtService.generateAccessToken(user));

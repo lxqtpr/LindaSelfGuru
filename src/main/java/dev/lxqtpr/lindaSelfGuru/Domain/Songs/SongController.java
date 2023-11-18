@@ -5,8 +5,6 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Songs.Dto.ResponseSongDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.Dto.UpdateSongDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,18 +13,18 @@ import org.springframework.web.bind.annotation.*;
 public class SongController {
     private final SongService songService;
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseSongDto> getSongById(@PathVariable Long id){
-        return ResponseEntity.ok(songService.getSongById(id));
+    public ResponseSongDto getSongById(@PathVariable Long id){
+        return songService.getSongById(id);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseSongDto> createSong(@ModelAttribute @Valid CreateSongDto dto){
-        return new ResponseEntity<>(songService.createSong(dto), HttpStatus.CREATED);
+    public ResponseSongDto createSong(@ModelAttribute @Valid CreateSongDto dto){
+        return songService.createSong(dto);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseSongDto> updateSong(@ModelAttribute @Valid UpdateSongDto dto){
-        return ResponseEntity.ok(songService.updateSong(dto));
+    public ResponseSongDto updateSong(@ModelAttribute @Valid UpdateSongDto dto){
+        return songService.updateSong(dto);
     }
 
     @DeleteMapping("/{userId}/{songId}")

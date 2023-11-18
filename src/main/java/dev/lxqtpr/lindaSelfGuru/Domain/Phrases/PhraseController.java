@@ -5,8 +5,6 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.ResponsePhraseDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.UpdatePhraseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,18 +14,18 @@ public class PhraseController {
     private final PhraseService phraseService;
 
     @PostMapping
-    public ResponseEntity<ResponsePhraseDto> createPhrase(@RequestBody @Valid CreatePhraseDto dto){
-        return new ResponseEntity<>(phraseService.createPhrase(dto), HttpStatus.CREATED);
+    public ResponsePhraseDto createPhrase(@RequestBody @Valid CreatePhraseDto dto){
+        return phraseService.createPhrase(dto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponsePhraseDto> getPhraseById(@PathVariable Long id){
-        return ResponseEntity.ok(phraseService.getPhraseById(id));
+    public ResponsePhraseDto getPhraseById(@PathVariable Long id){
+        return phraseService.getPhraseById(id);
     }
 
     @PutMapping
-    public ResponseEntity<ResponsePhraseDto> updatePhrase(@RequestBody @Valid UpdatePhraseDto dto){
-        return ResponseEntity.ok(phraseService.updatePhrase(dto));
+    public ResponsePhraseDto updatePhrase(@RequestBody @Valid UpdatePhraseDto dto){
+        return phraseService.updatePhrase(dto);
     }
 
     @DeleteMapping("/{id}")

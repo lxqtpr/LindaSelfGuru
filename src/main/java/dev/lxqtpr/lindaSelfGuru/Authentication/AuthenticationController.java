@@ -6,7 +6,6 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.ResponseUserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,22 +16,16 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/registration")
-    public ResponseEntity<ResponseUserDto> registration(@ModelAttribute @Valid CreateUserDto createUserDto){
-        return ResponseEntity.ok(
-                authenticationService.registration(createUserDto)
-        );
+    public ResponseUserDto registration(@ModelAttribute @Valid CreateUserDto createUserDto){
+        return authenticationService.registration(createUserDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseUserDto> login(@RequestBody @Valid LoginUserDto loginUserDto){
-        return ResponseEntity.ok(
-                authenticationService.login(loginUserDto)
-        );
+    public ResponseUserDto login(@RequestBody @Valid LoginUserDto loginUserDto){
+        return authenticationService.login(loginUserDto);
     }
     @PostMapping("/refresh")
-    public ResponseEntity<ResponseUserDto> refreshTokens(HttpServletRequest request){
-        return ResponseEntity.ok(
-                authenticationService.refreshTokens(request)
-        );
+    public ResponseUserDto refreshTokens(HttpServletRequest request){
+        return authenticationService.refreshTokens(request);
     }
 }

@@ -6,8 +6,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.ResponseCategoryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.UpdateCategoryDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -18,39 +17,40 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseCategoryDto> getCategoryById(@PathVariable Long id) {
-        return ResponseEntity
-                .ok(categoryService.getCategoryById(id));
+    @PreAuthorize("@securityExpression.canAccessUserToCategory(#id)")
+    public ResponseCategoryDto getCategoryById(@PathVariable Long id) {
+        return categoryService.getCategoryById(id);
     }
 
     @GetMapping("/getUserCategories/{userId}")
-    public ResponseEntity<List<ResponseCategoryDto>> getAllCategories(@PathVariable Long userId) {
-        return ResponseEntity
-                .ok(categoryService.getAllUserCategories(userId));
+    public List<ResponseCategoryDto> getAllCategories(@PathVariable Long userId) {
+        return categoryService.getAllUserCategories(userId);
     }
     @PostMapping
-    public ResponseEntity<ResponseCategoryDto> createCategory(@RequestBody @Valid CreateCategoryDto dto) {
-        return new ResponseEntity<>(categoryService.createCategory(dto), HttpStatus.CREATED);
+    public ResponseCategoryDto createCategory(@RequestBody @Valid CreateCategoryDto dto) {
+        return categoryService.createCategory(dto);
     }
 
     @PostMapping("/addSongToCategory")
-    public ResponseEntity<ResponseCategoryDto> addSongToCategory(
+    @PreAuthorize("@securityExpression.canAccessUserToCategory(#dto.categoryId)")
+    public ResponseCategoryDto addSongToCategory(
             @RequestBody @Valid CategoryAndSongId dto
     ){
-        return new ResponseEntity<>
-                (categoryService.addSongToCategory(dto), HttpStatus.CREATED);
+        return categoryService.addSongToCategory(dto);
     }
 
     @PostMapping("/removeSongFromCategory")
+    @PreAuthorize("@securityExpression.canAccessUserToCategory(#dto.categoryId)")
     public void removeSongFromCategory(@RequestBody @Valid CategoryAndSongId dto){
         categoryService.removeSongFromCategory(dto);
     }
     @PutMapping
-    private ResponseEntity<ResponseCategoryDto> updateCategory(@RequestBody @Valid UpdateCategoryDto dto){
-        return ResponseEntity
-                .ok(categoryService.updateCategory(dto));
+    @PreAuthorize("@securityExpression.canAccessUserToCategory(#dto.categoryId)")
+    private ResponseCategoryDto updateCategory(@RequestBody @Valid UpdateCategoryDto dto){
+        return categoryService.updateCategory(dto);
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("@securityExpression.canAccessUserToCategory(#id)")
     public void deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
     }

@@ -5,8 +5,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.ResponseNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.UpdateNoteDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,19 +17,26 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping
-    public ResponseEntity<ResponseNoteDto> createNote(@RequestBody @Valid CreateNoteDto dto){
-        return new ResponseEntity<>(noteService.createNote(dto), HttpStatus.CREATED);
+    public ResponseNoteDto createNote(@RequestBody @Valid CreateNoteDto dto){
+        return noteService.createNote(dto);
     }
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<ResponseNoteDto>> getAllUserNotes(@PathVariable Long userId){
-        return ResponseEntity.ok(noteService.getAllUserNotes(userId));
+    @GetMapping("/{noteId}")
+    @PreAuthorize("@securityExpression.canAccessUserToNote(#noteId)")
+    public ResponseNoteDto getNoteById(@PathVariable Long noteId){
+        return noteService.getNoteById(noteId);
+    }
+    @GetMapping("getNoteByUserId/{userId}")
+    public List<ResponseNoteDto> getAllUserNotes(@PathVariable Long userId){
+        return noteService.getAllUserNotes(userId);
     }
     @PutMapping
-    public ResponseEntity<ResponseNoteDto> updateNote(@RequestBody @Valid UpdateNoteDto dto){
-        return ResponseEntity.ok(noteService.updateNote(dto));
+    @PreAuthorize("@securityExpression.canAccessUserToNote(#dto.noteId)")
+    public ResponseNoteDto updateNote(@RequestBody @Valid UpdateNoteDto dto){
+        return noteService.updateNote(dto);
     }
 
     @DeleteMapping("/{noteId}")
+    @PreAuthorize("@securityExpression.canAccessUserToNote(#noteId)")
     public void deleteNote(@PathVariable Long noteId){
         noteService.deleteNote(noteId);
     }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,12 +28,13 @@ public class CategoryService {
 
     public ResponseCategoryDto createCategory(CreateCategoryDto dto){
         var categoryToSave = modelMapper.map(dto, CategoryEntity.class);
+
         var lib = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         var user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
         categoryToSave.setLibrary(lib);
-        categoryToSave.setSongs(List.of());
+        categoryToSave.setSongs(Collections.emptyList());
         categoryToSave.setUser(user);
         return modelMapper.map(categoryRepository.save(categoryToSave), ResponseCategoryDto.class);
     }
@@ -45,7 +47,8 @@ public class CategoryService {
     public List<ResponseCategoryDto> getAllUserCategories(Long userId){
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
-        return user.getCategories()
+        return user
+                .getCategories()
                 .stream()
                 .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();

@@ -27,6 +27,11 @@ public class NoteService {
         return modelMapper.map(noteRepository.save(noteToSave), ResponseNoteDto.class);
     }
 
+    public ResponseNoteDto getNoteById(Long noteId){
+        var note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
+        return modelMapper.map(note, ResponseNoteDto.class);
+    }
     public List<ResponseNoteDto> getAllUserNotes(Long userId){
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));

@@ -5,8 +5,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.ResponseProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.UpdateProjectDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,21 +17,23 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<ResponseProjectDto>> getAllUserProjects(@PathVariable Long userId){
-        return ResponseEntity.ok(projectService.getAllUserProjects(userId));
+    public List<ResponseProjectDto> getAllUserProjects(@PathVariable Long userId){
+        return projectService.getAllUserProjects(userId);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseProjectDto> createProject(@ModelAttribute @Valid CreateProjectDto dto){
-        return new ResponseEntity<>(projectService.createProject(dto), HttpStatus.CREATED);
+    public ResponseProjectDto createProject(@RequestBody @Valid CreateProjectDto dto){
+        return projectService.createProject(dto);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseProjectDto> updateProject(@RequestBody @Valid UpdateProjectDto dto){
-        return ResponseEntity.ok(projectService.updateProject(dto));
+    @PreAuthorize("@securityExpression.canAccessUserToProject(#dto.id)")
+    public ResponseProjectDto updateProject(@RequestBody @Valid UpdateProjectDto dto){
+        return projectService.updateProject(dto);
     }
 
     @DeleteMapping("/{projectId}/{userId}")
+    @PreAuthorize("@securityExpression.canAccessUserToProject(#projectId)")
     public void deleteProject(@PathVariable Long projectId, @PathVariable Long userId){
        projectService.deleteProject(userId, projectId);
     }

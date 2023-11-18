@@ -1,6 +1,5 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Libraries;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryEntity;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import jakarta.persistence.*;

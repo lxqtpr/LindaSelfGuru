@@ -9,6 +9,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Songs.Dto.UpdateSongDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +27,10 @@ public class SongService {
 
     public ResponseSongDto createSong(CreateSongDto dto){
         var songToSave = modelMapper.map(dto, SongEntity.class);
+
         var filePath = minioService.upload(dto.getUserId(), dto.getFile());
         var category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
-
         songToSave.setCategory(category);
         songToSave.setFilePath(filePath);
 

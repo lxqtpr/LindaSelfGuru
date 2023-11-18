@@ -8,10 +8,9 @@ volumes:
   pgAdmin-data:
     driver: local
 
-
 services:
   api:
-    container_name: 'lindaApi'
+    container_name: 'lindaSelfGuruApi'
     build: ./
     links:
       - postgres
@@ -22,7 +21,9 @@ services:
   postgres:
     image: postgres
     restart: always
-    container_name: postgres
+    container_name: postgresSelfGuru
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=lxqtpr2021
@@ -30,7 +31,7 @@ services:
       - db-data:/postgres
 
   pgadmin:
-    container_name: pgAdmin
+    container_name: pgAdminSelfGuru
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: lxqtpr@gmail.com
@@ -41,7 +42,7 @@ services:
       - pgAdmin-data:/pgadmin
   minio:
     image: minio/minio:latest
-    container_name: minio
+    container_name: minioSelfGuru
     restart: always
     environment:
       - MINIO_ROOT_USER=minioadmin

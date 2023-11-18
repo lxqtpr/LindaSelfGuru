@@ -32,12 +32,14 @@ public class LibraryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         return modelMapper.map(lib, ResponseLibraryDto.class);
     }
-    public List<ResponseLibraryDto> getAllUserLibraries(Long userId){
+    public List<ResponseLibraryDto> getAllUserLibraries(Long userId, Integer offset, Integer limit){
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with this id does not exist"));
         return user
                 .getLibraries()
                 .stream()
+                .skip(offset)
+                .limit(limit)
                 .map(library -> modelMapper.map(library, ResponseLibraryDto.class))
                 .toList();
     }
@@ -78,15 +80,17 @@ public class LibraryService {
     public List<ResponseCategoryDto> addCategoryToLibrary(LibraryAndCategoriesId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
-
         var categories = categoryRepository.findAllById(dto.getCategoriesId());
+
         categories.forEach(category -> {
             category.setLibrary(library);
             categoryRepository.save(category);
         });
 
-        return library.getCategories()
-                .stream().map(category -> modelMapper.map(category, ResponseCategoryDto.class))
+        return library
+                .getCategories()
+                .stream()
+                .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();
     }
     public void removeCategoryFromLibrary(LibraryAndCategoriesId dto){
@@ -101,7 +105,7 @@ public class LibraryService {
                 });
     }
     public ResponseLibraryDto updateLibrary (UpdateLibraryDto dto){
-        var library = libraryRepository.findById(dto.getId())
+        var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         if (dto.getAvatar() != null){
             var file = minioService.upload(dto.getUserId(), dto.getAvatar());

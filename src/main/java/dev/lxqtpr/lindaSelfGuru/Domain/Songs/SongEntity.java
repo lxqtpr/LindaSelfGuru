@@ -1,6 +1,8 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Songs;
 
+import java.util.List;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryEntity;
+import dev.lxqtpr.lindaSelfGuru.Domain.Projects.ProjectEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
