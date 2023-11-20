@@ -2,6 +2,14 @@ server:
   servlet:
     context-path: "/api"
 spring:
+  cache:
+    type: redis
+    cache-names: redis-cache
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: bHhxdHByMjAyMQ==
   jackson:
     default-property-inclusion: non_null
   servlet:
@@ -13,7 +21,7 @@ spring:
       log-condition-evaluation-delta: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lindaSelfGuru
+    url: jdbc:postgresql://postgres:5432/lindaSelfGuru
     username: postgres
     password: lxqtpr2021
   jpa:
@@ -22,6 +30,9 @@ spring:
         show_sql: true
         hbm2ddl:
           auto: update
+        format_sql: true
+        use_sql_comments: true
+        highlight_sql: true
 security:
   jwt:
     accessSecret: "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w=="
@@ -29,6 +40,6 @@ security:
     accessExpirationInMinutes: 5
     refreshExpirationInMinutes: 43200
 minio:
-  url: http://localhost:9000
+  url: http://minio:9000
   accessKey: minioadmin
   secretKey: minioadmin

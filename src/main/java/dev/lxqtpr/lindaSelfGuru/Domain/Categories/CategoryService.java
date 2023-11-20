@@ -8,10 +8,11 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.UpdateCategoryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.LibraryRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongsRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -28,7 +29,6 @@ public class CategoryService {
 
     public ResponseCategoryDto createCategory(CreateCategoryDto dto){
         var categoryToSave = modelMapper.map(dto, CategoryEntity.class);
-
         var lib = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         var user = userRepository.findById(dto.getUserId())
@@ -39,6 +39,7 @@ public class CategoryService {
         return modelMapper.map(categoryRepository.save(categoryToSave), ResponseCategoryDto.class);
     }
 
+    @Cacheable(value = "CategoryService::getCategoryById", key = "#id")
     public ResponseCategoryDto getCategoryById(Long categoryId){
         var category = categoryRepository.findById(categoryId)
                 .orElseThrow(()-> new ResourceNotFoundException("Category with this id does not exist"));
@@ -54,6 +55,7 @@ public class CategoryService {
                 .toList();
     }
 
+    @CachePut(value = "CategoryService::getCategoryById", key = "#dto.categoryId")
     public ResponseCategoryDto addSongToCategory(CategoryAndSongId dto){
         var category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
@@ -65,7 +67,8 @@ public class CategoryService {
         return modelMapper.map(categoryRepository.save(category), ResponseCategoryDto.class);
     }
 
-    public void removeSongFromCategory(CategoryAndSongId dto){
+    @CachePut(value = "CategoryService::getCategoryById", key = "#dto.categoryId")
+    public ResponseCategoryDto removeSongFromCategory(CategoryAndSongId dto){
         var category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
 
@@ -76,8 +79,10 @@ public class CategoryService {
                         songsRepository.save(song);
                     }
                 });
+        return modelMapper.map(category, ResponseCategoryDto.class);
     }
 
+    @CacheEvict(value = "CategoryService::getCategoryById", key = "#categoryId", allEntries = true)
     public void deleteCategory(Long categoryId){
         var category = categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));
@@ -89,6 +94,7 @@ public class CategoryService {
         );
         categoryRepository.deleteById(categoryId);
     }
+    @CachePut(value = "CategoryService::getCategoryById", key = "#dto.categoryId")
     public ResponseCategoryDto updateCategory(UpdateCategoryDto dto){
         var category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category with this id does not exist"));

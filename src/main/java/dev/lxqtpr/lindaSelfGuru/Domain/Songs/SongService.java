@@ -8,6 +8,9 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Songs.Dto.ResponseSongDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.Dto.UpdateSongDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +22,7 @@ public class SongService {
     private final ModelMapper modelMapper;
     private final MinioService minioService;
 
+    @Cacheable(value = "SongService::getSongById", key = "#id")
     public ResponseSongDto getSongById(Long id){
         var song = songRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Song with this id does not exist"));
@@ -37,6 +41,7 @@ public class SongService {
         return modelMapper.map(songRepository.save(songToSave), ResponseSongDto.class);
     }
 
+    @CachePut(value = "SongService::getSongById", key = "#dto.id")
     public ResponseSongDto updateSong(UpdateSongDto dto) {
         var song = songRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Song with this id does not exist"));
@@ -53,6 +58,7 @@ public class SongService {
         song.setSongName(dto.getSongName());
         return modelMapper.map(songRepository.save(song), ResponseSongDto.class);
     }
+    @CacheEvict(value = "SongService::getSongById", key = "#songId", allEntries = true)
     public void deleteSong(Long userId, Long songId){
         var song = songRepository.findById(songId)
                 .orElseThrow(() -> new ResourceNotFoundException("Song with this id does not exist"));

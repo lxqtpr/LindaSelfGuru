@@ -7,6 +7,9 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.ResponsePhraseDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.UpdatePhraseDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +19,6 @@ public class PhraseService {
     private final NoteRepository noteRepository;
     private final ModelMapper modelMapper;
 
-
     public ResponsePhraseDto createPhrase(CreatePhraseDto dto){
         var phraseToSave = modelMapper.map(dto, PhrasesEntity.class);
         var note = noteRepository.findById(dto.getNoteId())
@@ -25,11 +27,13 @@ public class PhraseService {
         return modelMapper.map(phraseRepository.save(phraseToSave), ResponsePhraseDto.class);
     }
 
+    @Cacheable(value = "PhrasesService::getPhraseById", key = "#phraseId")
     public ResponsePhraseDto getPhraseById(Long phraseId){
         var phrase = phraseRepository.findById(phraseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Phrase with this id does not exist"));
         return modelMapper.map(phrase, ResponsePhraseDto.class);
     }
+    @CachePut(value = "PhrasesService::getPhraseById", key = "#dto.id")
     public ResponsePhraseDto updatePhrase(UpdatePhraseDto dto){
         var phrase = phraseRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Phrase with this id does not exist"));
@@ -39,6 +43,7 @@ public class PhraseService {
         return modelMapper.map(phraseRepository.save(phrase), ResponsePhraseDto.class);
     }
 
+    @CacheEvict(value = "PhrasesService::getPhraseById", key = "#id", allEntries = true)
     public void deletePhrase(Long id){
         phraseRepository.deleteById(id);
     }

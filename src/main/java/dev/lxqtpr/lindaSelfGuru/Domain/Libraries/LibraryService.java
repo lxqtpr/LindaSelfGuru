@@ -9,9 +9,11 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.CreateLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.ResponseLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.UpdateLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class LibraryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-
+    @Cacheable(value = "LibraryService::getLibraryById", key = "#id")
     public ResponseLibraryDto getLibraryById(Long id){
         var lib = libraryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
@@ -61,6 +63,7 @@ public class LibraryService {
                 .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();
     }
+    @CacheEvict(value = "LibraryService::getLibraryById", key = "#id", allEntries = true)
     public void deleteLibrary(Long id){
         var lib = libraryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
@@ -77,6 +80,7 @@ public class LibraryService {
         );
         libraryRepository.deleteById(id);
     }
+    @CachePut(value = "LibraryService::getLibraryById", key = "#dto.libraryId")
     public List<ResponseCategoryDto> addCategoryToLibrary(LibraryAndCategoriesId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
@@ -93,7 +97,8 @@ public class LibraryService {
                 .map(category -> modelMapper.map(category, ResponseCategoryDto.class))
                 .toList();
     }
-    public void removeCategoryFromLibrary(LibraryAndCategoriesId dto){
+    @CachePut(value = "LibraryService::getLibraryById", key = "#dto.libraryId")
+    public ResponseLibraryDto removeCategoryFromLibrary(LibraryAndCategoriesId dto){
         var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));
         library.getCategories()
@@ -103,7 +108,9 @@ public class LibraryService {
                         categoryRepository.save(category);
                     }
                 });
+        return modelMapper.map(library, ResponseLibraryDto.class);
     }
+    @CachePut(value = "LibraryService::getLibraryById", key = "#dto.libraryId")
     public ResponseLibraryDto updateLibrary (UpdateLibraryDto dto){
         var library = libraryRepository.findById(dto.getLibraryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Library with this id does not exist"));

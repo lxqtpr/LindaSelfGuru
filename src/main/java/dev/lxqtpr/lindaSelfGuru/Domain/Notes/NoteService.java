@@ -8,6 +8,9 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class NoteService {
         return modelMapper.map(noteRepository.save(noteToSave), ResponseNoteDto.class);
     }
 
+    @Cacheable(value = "NoteService::getNoteById", key = "#noteId")
     public ResponseNoteDto getNoteById(Long noteId){
         var note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
@@ -41,6 +45,7 @@ public class NoteService {
                 .map(note -> modelMapper.map(note, ResponseNoteDto.class))
                 .toList();
     }
+    @CachePut(value = "NoteService::getNoteById", key = "#dto.noteId")
     public ResponseNoteDto updateNote(UpdateNoteDto dto){
         var note = noteRepository.findById(dto.getNoteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Note with this id does not exist"));
@@ -48,7 +53,7 @@ public class NoteService {
         return modelMapper.map(noteRepository.save(note), ResponseNoteDto.class);
     }
 
-    @Transactional
+    @CacheEvict(value = "NoteService::getNoteById", key = "#noteId", allEntries = true)
     public void deleteNote(Long noteId){
         noteRepository.deleteById(noteId);
     }

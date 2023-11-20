@@ -77,6 +77,13 @@ public class ControllerAdvice{
             org.springframework.security.access.AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionBody handleAccessDenied() {
-        return new ExceptionBody("You have no access to this endpoint", HttpStatus.FORBIDDEN.value());
+        return new ExceptionBody("You have no access to this entity", HttpStatus.FORBIDDEN.value());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionBody handleException(final Exception e) {
+        e.printStackTrace();
+        return new ExceptionBody("Internal error", HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

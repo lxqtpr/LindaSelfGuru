@@ -41,8 +41,8 @@ public class CategoryController {
 
     @PostMapping("/removeSongFromCategory")
     @PreAuthorize("@securityExpression.canAccessUserToCategory(#dto.categoryId)")
-    public void removeSongFromCategory(@RequestBody @Valid CategoryAndSongId dto){
-        categoryService.removeSongFromCategory(dto);
+    public ResponseCategoryDto removeSongFromCategory(@RequestBody @Valid CategoryAndSongId dto){
+        return categoryService.removeSongFromCategory(dto);
     }
     @PutMapping
     @PreAuthorize("@securityExpression.canAccessUserToCategory(#dto.categoryId)")

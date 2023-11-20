@@ -2,8 +2,10 @@ package dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class ResponseLibraryDto {
+public class ResponseLibraryDto implements Serializable {
 
     private Long id;
 

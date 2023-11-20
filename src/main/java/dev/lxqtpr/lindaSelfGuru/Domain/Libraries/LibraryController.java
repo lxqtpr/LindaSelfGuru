@@ -7,6 +7,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.ResponseLibraryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Libraries.Dto.UpdateLibraryDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class LibraryController {
     private final LibraryService libraryService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("@securityExpression.canAccessUserToLibrary(#id)")
     public ResponseLibraryDto getLibraryById(@PathVariable Long id){
         return libraryService.getLibraryById(id);
     }
@@ -53,8 +55,8 @@ public class LibraryController {
     }
     @PostMapping("/removeCategories")
     @PreAuthorize("@securityExpression.canAccessUserToLibrary(#dto.libraryId)")
-    public void removeCategory(@RequestBody @Valid LibraryAndCategoriesId dto){
-        libraryService.removeCategoryFromLibrary(dto);
+    public ResponseLibraryDto removeCategory(@RequestBody @Valid LibraryAndCategoriesId dto){
+        return libraryService.removeCategoryFromLibrary(dto);
     }
 
     @PutMapping

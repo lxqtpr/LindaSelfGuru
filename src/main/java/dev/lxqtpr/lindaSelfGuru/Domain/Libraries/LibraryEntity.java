@@ -5,6 +5,7 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class LibraryEntity {
+public class LibraryEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
