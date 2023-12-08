@@ -1,6 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.JwtException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.JwtException;
 import dev.lxqtpr.lindaSelfGuru.Core.Properties.JwtProperties;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserEntity;
 import io.jsonwebtoken.*;

@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Core.Excreptions;
+package dev.lxqtpr.lindaSelfGuru.Core.Exceptions;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Categories;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.CategoryAndSongId;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.CreateCategoryDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.Dto.ResponseCategoryDto;

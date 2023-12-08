@@ -1,6 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Phrases;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.NoteRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.CreatePhraseDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Phrases.Dto.ResponsePhraseDto;

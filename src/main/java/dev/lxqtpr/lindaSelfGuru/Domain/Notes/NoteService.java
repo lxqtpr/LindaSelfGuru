@@ -1,11 +1,10 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Notes;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.CreateNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.ResponseNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.Dto.UpdateNoteDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;

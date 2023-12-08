@@ -1,6 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Projects;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Notes.NoteRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.CreateProjectDto;
@@ -8,7 +8,6 @@ import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.ResponseProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Projects.Dto.UpdateProjectDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.SongsRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

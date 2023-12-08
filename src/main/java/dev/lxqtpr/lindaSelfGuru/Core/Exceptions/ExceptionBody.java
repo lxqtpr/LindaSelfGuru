@@ -1,10 +1,7 @@
-package dev.lxqtpr.lindaSelfGuru.Core.Excreptions;
+package dev.lxqtpr.lindaSelfGuru.Core.Exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
-
-import java.util.Map;
 
 @Data
 @AllArgsConstructor

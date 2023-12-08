@@ -1,4 +1,4 @@
-package dev.lxqtpr.lindaSelfGuru.Core.Excreptions;
+package dev.lxqtpr.lindaSelfGuru.Core.Exceptions;
 
 public class ImageUploadException extends RuntimeException {
 

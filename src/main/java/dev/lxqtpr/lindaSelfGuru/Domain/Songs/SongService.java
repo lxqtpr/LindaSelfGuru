@@ -1,6 +1,6 @@
 package dev.lxqtpr.lindaSelfGuru.Domain.Songs;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Categories.CategoryRepository;
 import dev.lxqtpr.lindaSelfGuru.Domain.Songs.Dto.CreateSongDto;
@@ -12,7 +12,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor

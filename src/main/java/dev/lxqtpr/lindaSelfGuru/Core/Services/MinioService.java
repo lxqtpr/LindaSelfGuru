@@ -1,18 +1,13 @@
 package dev.lxqtpr.lindaSelfGuru.Core.Services;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ImageUploadException;
-import dev.lxqtpr.lindaSelfGuru.Core.Properties.MinioProperties;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ImageUploadException;
 import io.minio.*;
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 @Service

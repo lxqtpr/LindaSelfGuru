@@ -1,8 +1,8 @@
 package dev.lxqtpr.lindaSelfGuru.Authentication;
 
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.JwtException;
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.PasswordDoesNotMatchException;
-import dev.lxqtpr.lindaSelfGuru.Core.Excreptions.ResourceNotFoundException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.JwtException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.PasswordDoesNotMatchException;
+import dev.lxqtpr.lindaSelfGuru.Core.Exceptions.ResourceNotFoundException;
 import dev.lxqtpr.lindaSelfGuru.Core.Services.MinioService;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.CreateUserDto;
 import dev.lxqtpr.lindaSelfGuru.Domain.Users.Dto.LoginUserDto;
