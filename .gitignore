@@ -1,10 +1,10 @@
 HELP.md
 .gradle
 build/
+deploy.sh
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-deploy.sh
 ### STS ###
 .apt_generated
 .classpath
