@@ -15,7 +15,6 @@ import java.time.ZoneId;
 import java.util.Date;
 
 
-@Slf4j
 @Component
 public class JwtService {
 
